@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Digital Health Check — Kaira Technologies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Spectral:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brick:#8c2f1c;--brick-deep:#6e2113;--ochre:#c8893f;--ochre-soft:#e9c188;
+    --cream:#f7f1e6;--paper:#fbf7ee;--ink:#2b2420;--muted:#6c5f53;--line:#e3d6c2;
+    --green:#3f8f4e;--amber:#d9962b;--red:#c0392b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Spectral',Georgia,serif;color:var(--ink);
+    background:radial-gradient(120% 90% at 100% 0%,rgba(200,137,63,.12),transparent 55%),var(--paper);
+    min-height:100vh;padding:22px;}
+  .wrap{max-width:1040px;margin:0 auto;}
+  .top{background:linear-gradient(135deg,var(--brick),var(--brick-deep));color:var(--cream);
+    border-radius:14px;padding:26px 30px;position:relative;overflow:hidden;box-shadow:0 14px 36px rgba(110,33,19,.28);}
+  .top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;
+    background:linear-gradient(90deg,var(--ochre),var(--ochre-soft),var(--ochre));}
+  .logo{font-family:'Fraunces',serif;font-weight:900;font-size:30px;line-height:1;}
+  .logo span{color:var(--ochre);}
+  .top h1{font-family:'Fraunces',serif;font-weight:600;font-size:21px;margin-top:12px;}
+  .top p{margin-top:6px;font-size:14px;color:#eccba2;max-width:60ch;line-height:1.5;}
+  .grid{display:grid;grid-template-columns:380px 1fr;gap:22px;margin-top:22px;}
+  @media(max-width:880px){.grid{grid-template-columns:1fr;}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 24px rgba(110,33,19,.07);}
+  .card-h{font-family:'Fraunces',serif;font-weight:600;font-size:16px;color:var(--brick);padding:16px 20px;border-bottom:1px solid var(--line);}
+  .card-b{padding:18px 20px;}
+  label{display:block;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin:14px 0 5px;}
+  label:first-of-type{margin-top:0;}
+  label .req{color:var(--brick);}
+  input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-family:'Spectral',serif;font-size:14.5px;color:var(--ink);background:var(--paper);}
+  input:focus{outline:none;border-color:var(--ochre);background:#fff;}
+  .btn{width:100%;margin-top:20px;padding:14px;border:none;border-radius:9px;cursor:pointer;
+    background:var(--brick);color:var(--cream);font-family:'Fraunces',serif;font-weight:600;font-size:15.5px;letter-spacing:.4px;transition:.15s;}
+  .btn:hover{background:var(--brick-deep);}
+  .btn:disabled{opacity:.6;cursor:wait;}
+  #out{min-height:200px;}
+  .placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:320px;color:var(--muted);text-align:center;padding:30px;}
+  .placeholder .big{font-family:'Fraunces',serif;font-size:42px;color:var(--line);font-weight:900;}
+  .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:320px;gap:16px;color:var(--brick);}
+  .spin{width:38px;height:38px;border:4px solid var(--line);border-top-color:var(--ochre);border-radius:50%;animation:s 1s linear infinite;}
+  @keyframes s{to{transform:rotate(360deg)}}
+  .lmsg{font-family:'Fraunces',serif;font-size:15px;}
+  .scorehead{display:flex;align-items:center;gap:18px;padding:20px;background:linear-gradient(135deg,rgba(200,137,63,.1),transparent);border-bottom:1px solid var(--line);}
+  .ring{width:84px;height:84px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:900;font-size:28px;color:#fff;box-shadow:0 6px 14px rgba(0,0,0,.12);}
+  .grade{font-family:'Fraunces',serif;font-weight:700;font-size:18px;}
+  .headline{font-size:13.5px;color:var(--muted);margin-top:3px;line-height:1.45;}
+  .rows{padding:8px 20px;}
+  .row{display:flex;align-items:flex-start;gap:13px;padding:13px 0;border-bottom:1px dashed var(--line);}
+  .row:last-child{border-bottom:none;}
+  .dot{width:14px;height:14px;border-radius:50%;margin-top:3px;flex-shrink:0;box-shadow:0 0 0 3px rgba(0,0,0,.04);}
+  .rname{font-family:'Fraunces',serif;font-weight:600;font-size:14px;}
+  .rnote{font-size:13px;color:var(--muted);margin-top:1px;line-height:1.4;}
+  .win{margin:6px 20px 0;padding:14px 16px;border-radius:10px;background:var(--brick);color:var(--cream);}
+  .win .k{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ochre-soft);}
+  .win .t{font-family:'Fraunces',serif;font-size:15px;margin-top:5px;line-height:1.4;}
+  .summary{padding:16px 20px;font-size:14px;line-height:1.6;color:var(--ink);}
+  .cta{margin:0 20px 18px;padding:14px 16px;border:1.5px dashed var(--ochre);border-radius:10px;text-align:center;font-family:'Fraunces',serif;font-size:14px;color:var(--brick-deep);}
+  .cta b{color:var(--brick);}
+  .copybar{display:flex;gap:10px;padding:0 20px 20px;}
+  .copybtn{flex:1;padding:12px;border:1px solid var(--ochre);background:#fff;color:var(--brick);border-radius:8px;cursor:pointer;font-family:'Fraunces',serif;font-weight:600;font-size:14px;transition:.15s;}
+  .copybtn:hover{background:var(--ochre);color:#fff;}
+  .copybtn.ok{background:var(--green);color:#fff;border-color:var(--green);}
+  .err{padding:30px;color:var(--red);text-align:center;font-size:14px;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="logo">KAIRA<span>.</span></div>
+    <h1>Free 5-Minute Digital Health Check</h1>
+    <p>Find out where your business stands online — and the one thing that will get you more customers. Powered by Kaira Technologies, Kovilpatti.</p>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="card-h">Your Business</div>
+      <div class="card-b">
+        <label>Business Name <span class="req">*</span></label>
+        <input id="name" placeholder="e.g. Sri Lakshmi Sweets">
+        <label>Business Type <span class="req">*</span></label>
+        <input id="cat" placeholder="e.g. Sweet shop / Dentist / Boutique">
+        <label>Town / City <span class="req">*</span></label>
+        <input id="town" placeholder="e.g. Kovilpatti">
+        <label>Website (if any)</label>
+        <input id="web" placeholder="leave blank if none">
+        <label>Instagram / Facebook (if any)</label>
+        <input id="social" placeholder="@handle or page name">
+        <label>Phone (if any)</label>
+        <input id="phone" placeholder="optional">
+        <button class="btn" id="go" onclick="run()">Check My Business — Free</button>
+      </div>
+    </div>
+
+    <div class="card" id="out">
+      <div class="placeholder">
+        <div class="big">5:00</div>
+        <p style="margin-top:10px;font-size:15px;">Enter your details and we'll check your online presence in under a minute.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// If you host the function on a different domain, put its full URL here.
+const API_URL = "/api/health-check";
+const loadMsgs = ["Looking up your Google profile…","Checking search rankings…","Reading reviews & reputation…","Inspecting your website…","Scoring & writing your report…"];
+let report = null;
+function v(id){return document.getElementById(id).value.trim();}
+
+async function run(){
+  const name=v('name'), cat=v('cat'), town=v('town');
+  if(!name||!cat||!town){alert("Please fill Business Name, Type and Town.");return;}
+  const btn=document.getElementById('go'); btn.disabled=true; btn.textContent="Checking…";
+  const out=document.getElementById('out');
+  out.innerHTML=`<div class="loading"><div class="spin"></div><div class="lmsg" id="lm">Starting…</div></div>`;
+  let i=0; const lm=document.getElementById('lm'); lm.textContent=loadMsgs[0];
+  const timer=setInterval(()=>{lm.textContent=loadMsgs[i%loadMsgs.length];i++;},2200);
+
+  try{
+    const res=await fetch(API_URL,{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({name,cat,town,web:v('web'),social:v('social'),phone:v('phone')})
+    });
+    clearInterval(timer);
+
+    let data=null;
+    const contentType=res.headers.get("content-type");
+    if(contentType&&contentType.includes("application/json")){
+      data=await res.json();
+    }
+
+    if(!res.ok){
+      const errDetail=(data&&data.error)||`HTTP error ${res.status}`;
+      throw new Error(errDetail);
+    }
+
+    if(!data){
+      throw new Error("Invalid or empty response from server");
+    }
+
+    report=data; render(report);
+  }catch(e){
+    clearInterval(timer);
+    out.innerHTML=`<div class="err">Sorry, we couldn't complete the check right now.<br><br>${(e&&e.message)||e}<br><br>Please try again in a moment.</div>`;
+  }
+  btn.disabled=false; btn.textContent="Check My Business — Free";
+}
+
+function color(s){return s==='green'?'var(--green)':s==='amber'?'var(--amber)':'var(--red)';}
+function ringColor(sc){return sc>=70?'var(--green)':sc>=40?'var(--amber)':'var(--red)';}
+
+function render(r){
+  const rows=r.categories.map(c=>`
+    <div class="row"><div class="dot" style="background:${color(c.status)}"></div>
+    <div><div class="rname">${c.name}</div><div class="rnote">${c.note}</div></div></div>`).join("");
+  document.getElementById('out').innerHTML=`
+    <div class="scorehead">
+      <div class="ring" style="background:${ringColor(r.overallScore)}">${r.overallScore}</div>
+      <div><div class="grade" style="color:${ringColor(r.overallScore)}">${r.grade}</div>
+      <div class="headline">${r.headline}</div></div>
+    </div>
+    <div class="rows">${rows}</div>
+    <div class="win"><div class="k">⭐ Your #1 Quick Win</div><div class="t">${r.quickWin}</div></div>
+    <div class="summary">${r.summary}</div>
+    <div class="cta">Want Kaira to fix all this & get you to the <b>top of Google</b>?<br>Call us — <b>Team Kaira, Kovilpatti</b></div>
+    <div class="copybar"><button class="copybtn" id="cb" onclick="copyWA()">📋 Copy this report</button></div>`;
+}
+
+function waText(r){
+  const icon=s=>s==='green'?'🟢':s==='amber'?'🟡':'🔴';
+  const lines=r.categories.map(c=>`${icon(c.status)} *${c.name}* — ${c.note}`).join("\n");
+  return `*KAIRA TECHNOLOGIES* 📊
+_Your 5-Minute Digital Health Check_
+
+*${r._biz.name}*, ${r._biz.town}
+Overall Score: *${r.overallScore}/100* — ${r.grade}
+
+${r.headline}
+
+${lines}
+
+⭐ *YOUR #1 QUICK WIN*
+${r.quickWin}
+
+${r.summary}
+
+Want us to get you to the *top of Google*? Contact Team Kaira, Kovilpatti.`;
+}
+function copyWA(){
+  navigator.clipboard.writeText(waText(report)).then(()=>{
+    const b=document.getElementById('cb'); b.textContent="✓ Copied"; b.classList.add('ok');
+    setTimeout(()=>{b.textContent="📋 Copy this report"; b.classList.remove('ok');},2400);
+  });
+}
+</script>
+</body>
+</html>
